@@ -3,7 +3,6 @@ from datetime import datetime
 from flask_login import UserMixin
 
 
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -19,7 +18,8 @@ class User(db.Model, UserMixin):
     pitches = db.relationship('Pitch', backref='author', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}, {self.email}, {self.image_file}')"
+        # return f"User('{self.username}, {self.email}, {self.image_file}')"
+        return "User {}, {}".format(self.username, self.image_file)
 
 
 class Pitch(db.Model):
@@ -32,7 +32,8 @@ class Pitch(db.Model):
     comments = db.relationship('Comment', backref='commenter', lazy=True)
 
     def __repr__(self):
-        return f"Pitch('{self.pitch}, {self.date_posted}')"
+        # return f"Pitch('{self.pitch}, {self.date_posted}')"
+        return "Pitch {}, {}".format(self.pitch, self.date_posted)
 
 
 class Comment(db.Model):
@@ -43,4 +44,5 @@ class Comment(db.Model):
     pitch_id = db.Column(db.Integer, db.ForeignKey('pitch.id'), nullable=False)
 
     def __repr__(self):
-        return f"Pitch('{self.comment}, {self.date_posted}')"
+        # return f"Pitch('{self.comment}, {self.date_posted}')"
+        return "Pitch {}, {}".format(self.comment, self.date_posted)

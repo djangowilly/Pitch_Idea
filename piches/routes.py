@@ -58,6 +58,7 @@ def logout():
 def send_email(email):
     pass
 
+
 @app.route('/profile')
 @login_required
 def profile():
