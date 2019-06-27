@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from piches.forms import RegistrationForm, LoginForm, PitchForm, CommentForm
+from piches.forms import RegistrationForm, LoginForm, PitchForm, CommentForm, UpdateAccountForm
 from piches.models import User, Pitch, Comment
 from piches import app, db, bcrypt
 from flask_login import login_user, logout_user, current_user, login_required
@@ -59,11 +59,22 @@ def send_email(email):
     pass
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Your Account has been updated')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username   
+        form.email.data = current_user.email
+    image_file = url_for('static', filename='profile/' + current_user.image_file)
     pitches = Pitch.query.filter_by(user_id=current_user.id).all()
-    return render_template('profile.html', title="profile", pitches=pitches)
+    return render_template('profile.html', title="profile", pitches=pitches, image_file=image_file, form=form)
 
 
 @app.route('/categories')
